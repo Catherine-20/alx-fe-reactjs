@@ -4,13 +4,11 @@ const MainContent = () => {
   const cities = ['Nairobi', 'Kigali', 'Cape Town', 'Lagos', 'Cairo'];
 
   return (
-    <main style={{ padding: '20px', backgroundColor: '#e0e0e0', minHeight: '200px' }}>
-      <h2 style={{ textAlign: 'center', color: 'darkblue' }}>List of Favorite Cities</h2>
-      <ul style={{ listStyleType: 'none', padding: 0 }}>
+    <main style={{ backgroundColor: '#f0f0f0', padding: '20px' }}>
+      <h2 style={{ color: 'darkgreen', textAlign: 'center' }}>List of Favorite Cities</h2>
+      <ul style={{ listStyleType: 'square', paddingLeft: '40px' }}>
         {cities.map((city, index) => (
-          <li key={index} style={{ padding: '8px', fontSize: '18px', color: 'black' }}>
-            {city}
-          </li>
+          <li key={index} style={{ margin: '5px 0' }}>{city}</li>
         ))}
       </ul>
     </main>
