@@ -1,40 +1,37 @@
-import { useState } from 'react';
+// src/components/AddRecipeForm.jsx
+import React, { useState } from 'react';
 import useRecipeStore from './recipeStore';
 
-function AddRecipeForm() {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const addRecipe = useRecipeStore((state) => state.addRecipe);
+const AddRecipeForm = () => {
+  const [title, setTitle] = useState('');
+  const [instructions, setInstructions] = useState('');
+  const addRecipe = useRecipeStore(state => state.addRecipe);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (name && description) {
-      addRecipe({ name, description });
-      setName('');
-      setDescription('');
-    }
+    if (!title.trim() || !instructions.trim()) return;
+    
+    addRecipe({ title, instructions });
+    setTitle('');
+    setInstructions('');
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-2">
+    <form onSubmit={handleSubmit}>
       <input
         type="text"
-        placeholder="Recipe Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        className="border p-2 w-full"
+        placeholder="Recipe title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
       />
       <textarea
-        placeholder="Description"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        className="border p-2 w-full"
-      />
-      <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
-        Add Recipe
-      </button>
+        placeholder="Instructions"
+        value={instructions}
+        onChange={(e) => setInstructions(e.target.value)}
+      ></textarea>
+      <button type="submit">Add Recipe</button>
     </form>
   );
-}
+};
 
 export default AddRecipeForm;
