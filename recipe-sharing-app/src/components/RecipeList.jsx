@@ -1,26 +1,20 @@
-import React from 'react';
-import useRecipeStore from '../store';
+import useRecipeStore from './recipeStore';
 
-const RecipeList = () => {
+function RecipeList() {
   const recipes = useRecipeStore((state) => state.recipes);
 
-  if (recipes.length === 0) {
-    return <p>No recipes yet.</p>;
-  }
-
   return (
-    <div>
-      <h2>Recipe List</h2>
+    <div className="mt-4">
+      <h2 className="text-xl font-bold mb-2">🍴 Recipes</h2>
       <ul>
         {recipes.map((recipe, index) => (
-          <li key={index}>
-            <h3>{recipe.title}</h3>
-            <p>{recipe.ingredients}</p>
+          <li key={index} className="border-b py-2">
+            <strong>{recipe.name}</strong>: {recipe.description}
           </li>
         ))}
       </ul>
     </div>
   );
-};
+}
 
 export default RecipeList;
