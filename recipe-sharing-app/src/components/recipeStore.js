@@ -1,29 +1,61 @@
 // src/components/recipeStore.js
 import { create } from 'zustand';
+import { nanoid } from 'nanoid';
 
-export const useRecipeStore = create((set) => ({
+export const useRecipeStore = create(set => ({
   recipes: [],
+  filteredRecipes: [],
+  searchTerm: '',
 
-  // ✅ Add and use this function to replace the entire recipe list
-  setRecipes: (recipes) => set({ recipes }),
+  setSearchTerm: (term) => {
+    set({ searchTerm: term });
+    set(state => ({
+      filteredRecipes: state.recipes.filter(recipe =>
+        recipe.title.toLowerCase().includes(term.toLowerCase())
+      )
+    }));
+  },
 
-  // Add a new recipe
-  addRecipe: (recipe) =>
-    set((state) => ({
-      recipes: [...state.recipes, recipe],
-    })),
+  addRecipe: (title, description) =>
+    set(state => {
+      const newRecipe = {
+        id: nanoid(),
+        title,
+        description,
+      };
+      return {
+        recipes: [...state.recipes, newRecipe],
+        filteredRecipes: [...state.filteredRecipes, newRecipe],
+      };
+    }),
 
-  // Delete a recipe by ID
   deleteRecipe: (id) =>
-    set((state) => ({
-      recipes: state.recipes.filter((recipe) => recipe.id !== id),
-    })),
+    set(state => {
+      const updated = state.recipes.filter(recipe => recipe.id !== id);
+      return {
+        recipes: updated,
+        filteredRecipes: updated.filter(recipe =>
+          recipe.title.toLowerCase().includes(state.searchTerm.toLowerCase())
+        ),
+      };
+    }),
 
-  // Update a recipe by replacing the one with the same ID
-  updateRecipe: (updatedRecipe) =>
-    set((state) => ({
-      recipes: state.recipes.map((recipe) =>
-        recipe.id === updatedRecipe.id ? updatedRecipe : recipe
-      ),
-    })),
+  editRecipe: (id, newTitle, newDescription) =>
+    set(state => {
+      const updated = state.recipes.map(recipe =>
+        recipe.id === id ? { ...recipe, title: newTitle, description: newDescription } : recipe
+      );
+      return {
+        recipes: updated,
+        filteredRecipes: updated.filter(recipe =>
+          recipe.title.toLowerCase().includes(state.searchTerm.toLowerCase())
+        ),
+      };
+    }),
+
+  setRecipes: (recipes) =>
+    set(() => ({
+      recipes,
+      filteredRecipes: recipes
+    }))
 }));

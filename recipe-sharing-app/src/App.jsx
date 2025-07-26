@@ -1,14 +1,18 @@
 // src/App.jsx
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import AddRecipeForm from "./components/AddRecipeForm";
-import RecipeList from "./components/RecipeList";
-import RecipeDetails from "./components/RecipeDetails";
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import AddRecipeForm from './components/AddRecipeForm';
+import RecipeList from './components/RecipeList';
+import RecipeDetails from './components/RecipeDetails';
+import EditRecipeForm from './components/EditRecipeForm';
+import SearchBar from './components/SearchBar';
 
-function App() {
+const App = () => {
   return (
     <Router>
-      <div style={{ padding: "20px" }}>
+      <div className="App">
         <h1>Recipe Sharing App</h1>
+        <SearchBar />
         <Routes>
           <Route path="/" element={
             <>
@@ -17,10 +21,11 @@ function App() {
             </>
           } />
           <Route path="/recipe/:id" element={<RecipeDetails />} />
+          <Route path="/edit/:id" element={<EditRecipeForm />} />
         </Routes>
       </div>
     </Router>
   );
-}
+};
 
 export default App;
