@@ -1,61 +1,44 @@
 // src/components/recipeStore.js
 import { create } from 'zustand';
-import { nanoid } from 'nanoid';
 
-export const useRecipeStore = create(set => ({
+export const useRecipeStore = create((set) => ({
+  // Recipes
   recipes: [],
-  filteredRecipes: [],
-  searchTerm: '',
+  setRecipes: (recipes) => set({ recipes }),
 
+  // Search and Filtering
+  searchTerm: '',
   setSearchTerm: (term) => {
     set({ searchTerm: term });
-    set(state => ({
-      filteredRecipes: state.recipes.filter(recipe =>
-        recipe.title.toLowerCase().includes(term.toLowerCase())
-      )
-    }));
+    useRecipeStore.getState().filterRecipes(); // trigger filter when term is updated
   },
+  filteredRecipes: [],
+  filterRecipes: () =>
+    set((state) => ({
+      filteredRecipes: state.recipes.filter((recipe) =>
+        recipe.title.toLowerCase().includes(state.searchTerm.toLowerCase())
+      ),
+    })),
 
-  addRecipe: (title, description) =>
-    set(state => {
-      const newRecipe = {
-        id: nanoid(),
-        title,
-        description,
-      };
-      return {
-        recipes: [...state.recipes, newRecipe],
-        filteredRecipes: [...state.filteredRecipes, newRecipe],
-      };
-    }),
+  // Favorites
+  favorites: [],
+  addFavorite: (recipeId) =>
+    set((state) => ({
+      favorites: [...new Set([...state.favorites, recipeId])], // prevent duplicates
+    })),
+  removeFavorite: (recipeId) =>
+    set((state) => ({
+      favorites: state.favorites.filter((id) => id !== recipeId),
+    })),
 
-  deleteRecipe: (id) =>
-    set(state => {
-      const updated = state.recipes.filter(recipe => recipe.id !== id);
-      return {
-        recipes: updated,
-        filteredRecipes: updated.filter(recipe =>
-          recipe.title.toLowerCase().includes(state.searchTerm.toLowerCase())
-        ),
-      };
-    }),
-
-  editRecipe: (id, newTitle, newDescription) =>
-    set(state => {
-      const updated = state.recipes.map(recipe =>
-        recipe.id === id ? { ...recipe, title: newTitle, description: newDescription } : recipe
+  // Recommendations
+  recommendations: [],
+  generateRecommendations: () =>
+    set((state) => {
+      const recommended = state.recipes.filter(
+        (recipe) =>
+          state.favorites.includes(recipe.id) && Math.random() > 0.5
       );
-      return {
-        recipes: updated,
-        filteredRecipes: updated.filter(recipe =>
-          recipe.title.toLowerCase().includes(state.searchTerm.toLowerCase())
-        ),
-      };
+      return { recommendations: recommended };
     }),
-
-  setRecipes: (recipes) =>
-    set(() => ({
-      recipes,
-      filteredRecipes: recipes
-    }))
 }));
