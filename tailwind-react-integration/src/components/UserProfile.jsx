@@ -6,7 +6,7 @@ export default function UserProfile() {
       <img
         src="https://via.placeholder.com/150"
         alt="User Avatar"
-        className="w-24 h-24 md:w-36 md:h-36 rounded-full mx-auto mb-4"
+        className="sm:w-24 sm:h-24 md:w-36 md:h-36 rounded-full mx-auto mb-4"
       />
       <h2 className="text-lg md:text-xl font-semibold text-gray-800">Jane Doe</h2>
       <p className="text-sm md:text-base text-gray-600">Frontend Developer at ALX</p>
