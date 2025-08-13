@@ -1,37 +1,30 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
+import recipesData from "../data.json";
 
 const HomePage = () => {
+  const [recipes, setRecipes] = useState([]);
+
+  useEffect(() => {
+    // Load data from the local data.json
+    setRecipes(recipesData);
+  }, []);
+
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold text-gray-800">
-        Welcome to the Recipe Sharing Platform
-      </h1>
-      <p className="mt-4 text-lg text-gray-600">
-        Discover, share, and enjoy delicious recipes from around the world.
-      </p>
-
-      <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Example recipe cards */}
-        <div className="bg-white rounded-lg shadow-md p-4">
-          <h2 className="text-xl font-semibold text-gray-700">Spaghetti Carbonara</h2>
-          <p className="mt-2 text-sm text-gray-500">
-            A creamy and savory pasta dish from Italy.
-          </p>
-        </div>
-
-        <div className="bg-white rounded-lg shadow-md p-4">
-          <h2 className="text-xl font-semibold text-gray-700">Chicken Curry</h2>
-          <p className="mt-2 text-sm text-gray-500">
-            A flavorful and spicy Indian-inspired dish.
-          </p>
-        </div>
-
-        <div className="bg-white rounded-lg shadow-md p-4">
-          <h2 className="text-xl font-semibold text-gray-700">Avocado Toast</h2>
-          <p className="mt-2 text-sm text-gray-500">
-            A simple yet tasty breakfast or snack.
-          </p>
-        </div>
+    <div className="p-6">
+      <h1 className="text-3xl font-bold mb-4">Recipe Sharing Platform</h1>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {recipes.map((recipe, index) => (
+          <div
+            key={index}
+            className="border rounded-lg shadow-lg p-4 bg-white"
+          >
+            <h2 className="text-xl font-semibold mb-2">{recipe.name}</h2>
+            <p className="text-gray-700 mb-2">{recipe.description}</p>
+            <p className="text-sm text-gray-500">
+              Ingredients: {recipe.ingredients.join(", ")}
+            </p>
+          </div>
+        ))}
       </div>
     </div>
   );
