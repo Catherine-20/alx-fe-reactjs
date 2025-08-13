@@ -1,28 +1,26 @@
-import React, { useState, useEffect } from "react";
-import recipesData from "../data.json";
+import React, { useState, useEffect } from 'react';
 
 const HomePage = () => {
-  const [recipes, setRecipes] = useState([]);
+  const [items, setItems] = useState([]);
 
   useEffect(() => {
-    // Load data from the local data.json
-    setRecipes(recipesData);
+    fetch('/data.json')
+      .then((res) => res.json())
+      .then((data) => setItems(data))
+      .catch((err) => console.error('Error loading data:', err));
   }, []);
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold mb-4">Recipe Sharing Platform</h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {recipes.map((recipe, index) => (
+      <h1 className="text-2xl font-bold mb-4">Home Page</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        {items.map((item) => (
           <div
-            key={index}
-            className="border rounded-lg shadow-lg p-4 bg-white"
+            key={item.id}
+            className="p-4 bg-white rounded shadow hover:shadow-lg hover:scale-105 transition-transform duration-200"
           >
-            <h2 className="text-xl font-semibold mb-2">{recipe.name}</h2>
-            <p className="text-gray-700 mb-2">{recipe.description}</p>
-            <p className="text-sm text-gray-500">
-              Ingredients: {recipe.ingredients.join(", ")}
-            </p>
+            <h2 className="text-lg font-semibold">{item.name}</h2>
+            <p className="text-gray-600">{item.description}</p>
           </div>
         ))}
       </div>
