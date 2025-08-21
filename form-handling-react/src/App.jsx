@@ -1,21 +1,23 @@
+import React, { useState } from "react";
 import RegistrationForm from "./components/RegistrationForm";
 import FormikForm from "./components/formikForm";
-import "./app.css";
 
-export default function App() {
+
+
+function App() {
+  const [useFormik, setUseFormik] = useState(false);
+
   return (
-    <main className="container">
-      <h1>Form Handling in React</h1>
+    <div style={{ padding: "20px" }}>
+      <h1>User Registration</h1>
 
-      <section style={{ marginBottom: "2rem" }}>
-        <h2>Controlled Components</h2>
-        <RegistrationForm />
-      </section>
+      <button onClick={() => setUseFormik(!useFormik)} style={{ marginBottom: "20px" }}>
+        {useFormik ? "Switch to Controlled Form" : "Switch to Formik Form"}
+      </button>
 
-      <section>
-        <h2>Formik + Yup</h2>
-        <FormikForm />
-      </section>
-    </main>
+      {useFormik ? <FormikForm /> : <RegistrationForm />}
+    </div>
   );
 }
+
+export default App;

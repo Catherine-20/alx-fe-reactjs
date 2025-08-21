@@ -1,95 +1,65 @@
+import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
+// ✅ Validation schema using Yup
 const validationSchema = Yup.object({
-  username: Yup.string().trim().min(3, "At least 3 characters").required("Required"),
-  email: Yup.string().email("Invalid email").required("Required"),
-  password: Yup.string().min(6, "At least 6 characters").required("Required"),
+  username: Yup.string().required("Username is required"),
+  email: Yup.string().email("Invalid email format").required("Email is required"),
+  password: Yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
 });
 
-const initialValues = { username: "", email: "", password: "" };
-
-async function submitToApi(values) {
-  const res = await fetch("https://reqres.in/api/users", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(values),
-  });
-  if (!res.ok) throw new Error(`Request failed (${res.status})`);
-  return res.json();
-}
-
-export default function FormikForm() {
+const FormikForm = () => {
   return (
-    <div className="card">
-      <h2 className="title">Registration (Formik + Yup)</h2>
+    <Formik
+      initialValues={{ username: "", email: "", password: "" }}
+      validationSchema={validationSchema}
+      onSubmit={async (values, { setSubmitting, resetForm, setStatus }) => {
+        try {
+          const res = await fetch("https://reqres.in/api/users", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(values),
+          });
 
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={async (values, { setSubmitting, resetForm, setStatus }) => {
-          setStatus({ success: "", error: "" });
-          try {
-            const data = await submitToApi(values);
-            setStatus({ success: `Registered! id: ${data.id}`, error: "" });
-            resetForm();
-          } catch (err) {
-            setStatus({ success: "", error: err.message || "Something went wrong" });
-          } finally {
-            setSubmitting(false);
-          }
-        }}
-      >
-        {({ isSubmitting, status, values, handleChange }) => (
-          <Form noValidate>
-            <label>
-              Username
-              <Field
-                name="username"
-                type="text"
-                value={values.username}   // explicit value
-                onChange={handleChange}   // explicit handler
-                placeholder="e.g. kath123"
-                autoComplete="username"
-              />
-              <ErrorMessage name="username" component="div" className="error" />
-            </label>
+          const data = await res.json();
+          setStatus(`✅ User registered with ID: ${data.id}`);
+          resetForm();
+        } catch (err) {
+          setStatus("❌ Error registering user");
+        }
+        setSubmitting(false);
+      }}
+    >
+      {({ isSubmitting, status }) => (
+        <Form>
+          <div>
+            <label>Username:</label>
+            <Field type="text" name="username" />
+            <ErrorMessage name="username" component="p" style={{ color: "red" }} />
+          </div>
 
-            <label>
-              Email
-              <Field
-                name="email"
-                type="email"
-                value={values.email}
-                onChange={handleChange}
-                placeholder="you@example.com"
-                autoComplete="email"
-              />
-              <ErrorMessage name="email" component="div" className="error" />
-            </label>
+          <div>
+            <label>Email:</label>
+            <Field type="email" name="email" />
+            <ErrorMessage name="email" component="p" style={{ color: "red" }} />
+          </div>
 
-            <label>
-              Password
-              <Field
-                name="password"
-                type="password"
-                value={values.password}
-                onChange={handleChange}
-                placeholder="••••••••"
-                autoComplete="new-password"
-              />
-              <ErrorMessage name="password" component="div" className="error" />
-            </label>
+          <div>
+            <label>Password:</label>
+            <Field type="password" name="password" />
+            <ErrorMessage name="password" component="p" style={{ color: "red" }} />
+          </div>
 
-            <button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Submitting..." : "Create account"}
-            </button>
+          <button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Registering..." : "Register"}
+          </button>
 
-            {status?.success && <p className="success">{status.success}</p>}
-            {status?.error && <p className="error">{status.error}</p>}
-          </Form>
-        )}
-      </Formik>
-    </div>
+          {status && <p>{status}</p>}
+        </Form>
+      )}
+    </Formik>
   );
-}
+};
+
+export default FormikForm;
