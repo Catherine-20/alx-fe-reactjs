@@ -4,95 +4,78 @@ export default function RegistrationForm() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState({});
-  const [status, setStatus] = useState({ loading: false, message: "", error: "" });
+  const [message, setMessage] = useState("");
 
-  const validate = () => {
-    const errs = {};
-    if (!username.trim()) errs.username = "Username is required";
-    if (!email.trim()) errs.email = "Email is required";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errs.email = "Invalid email";
-    if (!password) errs.password = "Password is required";
-    else if (password.length < 6) errs.password = "Min 6 characters";
-    setErrors(errs);
-    return Object.keys(errs).length === 0;
-  };
-
-  const onSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validate()) return;
 
-    setStatus({ loading: true, message: "", error: "" });
+    // ✅ basic validation logic
+    if (!username) {
+      setMessage("Username is required");
+      return;
+    }
+    if (!email) {
+      setMessage("Email is required");
+      return;
+    }
+    if (!password) {
+      setMessage("Password is required");
+      return;
+    }
+
     try {
       const res = await fetch("https://reqres.in/api/users", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ username, email, password }),
       });
-      if (!res.ok) throw new Error(`Request failed (${res.status})`);
       const data = await res.json();
-      setStatus({ loading: false, message: `Registered! id: ${data.id}`, error: "" });
-      // clear form
+      setMessage(`User registered with ID: ${data.id}`);
+      // reset fields
       setUsername("");
       setEmail("");
       setPassword("");
-      setErrors({});
     } catch (err) {
-      setStatus({ loading: false, message: "", error: err.message || "Something went wrong" });
+      setMessage("Error registering user");
     }
   };
 
   return (
     <div className="card">
-      <h2 className="title">Registration (Controlled)</h2>
-
-      <form onSubmit={onSubmit} noValidate>
-        <label>
-          Username
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Username:</label>
           <input
-            name="username"
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            placeholder="e.g. kath123"
-            autoComplete="username"
           />
-          {errors.username && <div className="error">{errors.username}</div>}
-        </label>
+        </div>
 
-        <label>
-          Email
+        <div>
+          <label>Email:</label>
           <input
-            name="email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
-            autoComplete="email"
           />
-          {errors.email && <div className="error">{errors.email}</div>}
-        </label>
+        </div>
 
-        <label>
-          Password
+        <div>
+          <label>Password:</label>
           <input
-            name="password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••"
-            autoComplete="new-password"
           />
-          {errors.password && <div className="error">{errors.password}</div>}
-        </label>
+        </div>
 
-        <button type="submit" disabled={status.loading}>
-          {status.loading ? "Submitting..." : "Create account"}
-        </button>
-
-        {status.message && <p className="success">{status.message}</p>}
-        {status.error && <p className="error">{status.error}</p>}
+        <button type="submit">Register</button>
       </form>
+
+      {message && <p>{message}</p>}
     </div>
   );
 }
