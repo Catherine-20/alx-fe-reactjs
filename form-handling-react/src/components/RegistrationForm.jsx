@@ -1,22 +1,19 @@
 import { useState } from "react";
 
 export default function RegistrationForm() {
-  const [form, setForm] = useState({ username: "", email: "", password: "" });
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState({ loading: false, message: "", error: "" });
 
-  const onChange = (e) => {
-    const { name, value } = e.target;
-    setForm((f) => ({ ...f, [name]: value }));
-  };
-
   const validate = () => {
     const errs = {};
-    if (!form.username.trim()) errs.username = "Username is required";
-    if (!form.email.trim()) errs.email = "Email is required";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = "Invalid email";
-    if (!form.password) errs.password = "Password is required";
-    else if (form.password.length < 6) errs.password = "Min 6 characters";
+    if (!username.trim()) errs.username = "Username is required";
+    if (!email.trim()) errs.email = "Email is required";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errs.email = "Invalid email";
+    if (!password) errs.password = "Password is required";
+    else if (password.length < 6) errs.password = "Min 6 characters";
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -27,16 +24,18 @@ export default function RegistrationForm() {
 
     setStatus({ loading: true, message: "", error: "" });
     try {
-      // Mock “registration” request to ReqRes
       const res = await fetch("https://reqres.in/api/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ username, email, password }),
       });
       if (!res.ok) throw new Error(`Request failed (${res.status})`);
       const data = await res.json();
       setStatus({ loading: false, message: `Registered! id: ${data.id}`, error: "" });
-      setForm({ username: "", email: "", password: "" });
+      // clear form
+      setUsername("");
+      setEmail("");
+      setPassword("");
       setErrors({});
     } catch (err) {
       setStatus({ loading: false, message: "", error: err.message || "Something went wrong" });
@@ -53,8 +52,8 @@ export default function RegistrationForm() {
           <input
             name="username"
             type="text"
-            value={form.username}
-            onChange={onChange}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             placeholder="e.g. kath123"
             autoComplete="username"
           />
@@ -66,8 +65,8 @@ export default function RegistrationForm() {
           <input
             name="email"
             type="email"
-            value={form.email}
-            onChange={onChange}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             placeholder="you@example.com"
             autoComplete="email"
           />
@@ -79,8 +78,8 @@ export default function RegistrationForm() {
           <input
             name="password"
             type="password"
-            value={form.password}
-            onChange={onChange}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
             autoComplete="new-password"
           />

@@ -40,23 +40,44 @@ export default function FormikForm() {
           }
         }}
       >
-        {({ isSubmitting, status }) => (
+        {({ isSubmitting, status, values, handleChange }) => (
           <Form noValidate>
             <label>
               Username
-              <Field name="username" type="text" placeholder="e.g. kath123" autoComplete="username" />
+              <Field
+                name="username"
+                type="text"
+                value={values.username}   // explicit value
+                onChange={handleChange}   // explicit handler
+                placeholder="e.g. kath123"
+                autoComplete="username"
+              />
               <ErrorMessage name="username" component="div" className="error" />
             </label>
 
             <label>
               Email
-              <Field name="email" type="email" placeholder="you@example.com" autoComplete="email" />
+              <Field
+                name="email"
+                type="email"
+                value={values.email}
+                onChange={handleChange}
+                placeholder="you@example.com"
+                autoComplete="email"
+              />
               <ErrorMessage name="email" component="div" className="error" />
             </label>
 
             <label>
               Password
-              <Field name="password" type="password" placeholder="••••••••" autoComplete="new-password" />
+              <Field
+                name="password"
+                type="password"
+                value={values.password}
+                onChange={handleChange}
+                placeholder="••••••••"
+                autoComplete="new-password"
+              />
               <ErrorMessage name="password" component="div" className="error" />
             </label>
 
