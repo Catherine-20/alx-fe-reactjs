@@ -1,7 +1,7 @@
 import React from "react";
 import { useQuery } from "react-query";
 
-// Fetch posts from JSONPlaceholder
+// Fetch posts from JSONPlaceholder API
 const fetchPosts = async () => {
   const res = await fetch("https://jsonplaceholder.typicode.com/posts");
   if (!res.ok) throw new Error("Network response was not ok");
@@ -13,7 +13,7 @@ export default function PostsComponent() {
     "posts",
     fetchPosts,
     {
-      staleTime: 5 * 60 * 1000, // cache for 5 minutes
+      staleTime: 5 * 60 * 1000, // Cache posts for 5 minutes
     }
   );
 
