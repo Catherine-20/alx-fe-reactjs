@@ -13,7 +13,10 @@ export default function PostsComponent() {
     "posts",
     fetchPosts,
     {
-      staleTime: 5 * 60 * 1000, // Cache posts for 5 minutes
+      staleTime: 5 * 60 * 1000,           // cache considered fresh for 5 minutes
+      cacheTime: 10 * 60 * 1000,          // inactive data stays in cache for 10 minutes
+      refetchOnWindowFocus: true,         // refetch data when tab/window regains focus
+      keepPreviousData: true,             // keeps previous data while fetching new
     }
   );
 
