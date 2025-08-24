@@ -1,11 +1,12 @@
-// src/components/Profile.jsx
 import React from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Routes, Route } from "react-router-dom";
+import ProfileDetails from "./ProfileDetails";
+import ProfileSettings from "./ProfileSettings";
 
-const Profile = () => {
+function Profile() {
   return (
     <div>
-      <h1>Profile Page</h1>
+      <h2>Profile Page</h2>
       <nav>
         <ul>
           <li>
@@ -16,10 +17,14 @@ const Profile = () => {
           </li>
         </ul>
       </nav>
-      {/* Nested routes will render here */}
-      <Outlet />
+
+      {/* Nested Routes */}
+      <Routes>
+        <Route path="details" element={<ProfileDetails />} />
+        <Route path="settings" element={<ProfileSettings />} />
+      </Routes>
     </div>
   );
-};
+}
 
 export default Profile;
